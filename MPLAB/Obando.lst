@@ -1,0 +1,186 @@
+MPASM  4.02 Released                               OBANDO.ASM   1-10-2023  23:17:05         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;Programa realizado por
+                      00002 
+                      00003 ;                       N O M B R E     |       C E D U L A 
+                      00004 ;                       Amparo Obando   |       28.210.570
+                      00005 ;                       Andres Lopez    |       30.114.256
+                      00006 ;                       Israel Mejias   |       28.149.883
+                      00007 
+                      00008 
+                      00009                 LIST P=16F84A                   ;Libreria del PIC a utilizar
+                      00010 
+  00000001            00011 OP              EQU             01H                             ;Registro Option
+  00000001            00012 TMR0    EQU             01H                             ;Registro del Timer
+  0000000B            00013 INTCON  EQU             0BH                             ;Registo INTCON
+  00000005            00014 TRISA   EQU             05H                             ;Registro de configuracion de Puerta A
+  00000005            00015 PA              EQU             05H                             ;Puerta A
+  00000006            00016 TRISB   EQU             06H                             ;Registro de configuracion de Puerta B
+  00000006            00017 PB              EQU             06H                             ;Puerta B
+  00000003            00018 STATUS  EQU             03H                             ;Registro para acceder a las posiciones del banc
+                            o
+  00000010            00019 VAR             EQU             10H                             ;Variable auxiliar utilizada como contad
+                            or
+                      00020                                                 
+                      00021 ;--------------------------------------------------------------
+0000                  00022                 ORG     0                               ;El programa comienza en la direccion 0
+0000   2810           00023                 GOTO    INICIO                  ;Se redirigie a la etiqueta INICIO
+                      00024 
+0010                  00025 INICIO  ORG             10                              ;La etiqueta INICIO     comienza en la direccion
+                             10 da pie a la entrada de Datos y configuracion de registros
+0010   1683           00026                 BSF             STATUS,5                ;Cambio al banco de memoria 1
+0011   3007           00027                 MOVLW   B'00000111'             ;Muevo el valor de 00000111 a W
+0012   0081           00028                 MOVWF   OP                              ;Muevo el valor de W a OP
+0013   0185           00029                 CLRF    TRISA                   ;Se configura el puerto A como puerto de salida
+0014   30FF           00030                 MOVLW   0xFF                    ;Muevo el valor de 0xFF HEX a W
+0015   0806           00031                 MOVFW   TRISB                   ;Muevo el valor de W a TRISB para configurarlo como puer
+                            to de entrada
+0016   1283           00032                 BCF             STATUS,5                ;Cambio al banco de memoria 0
+                      00033 
+0017   1406           00034                 BSF             PB,0                    ;Se configura el PIN0 del PB con el valor de 1
+0018   1486           00035                 BSF             PB,1                    ;Se configura el PIN1 del PB con el valor de 1
+0019   1506           00036                 BSF             PB,2                    ;Se configura el PIN2 del PB con el valor de 1
+001A   1586           00037                 BSF             PB,3                    ;Se configura el PIN3 del PB con el valor de 1
+                      00038 
+001B   1005           00039                 BCF             PA,0                    ;Se configura el PIN0 del PA con el valor de 0
+001C   1085           00040                 BCF             PA,1                    ;Se configura el PIN1 del PA con el valor de 0
+                      00041                 
+                      00042 ;--------------------------------------------------------------         
+001D   1C06           00043 START   BTFSS   PB,0                    ;Se inicia la etiqueta START y se comprueba el PIN0 del PB, si e
+                            s 1 salta una linea
+001E   2826           00044                 GOTO    BTN1                    ;Si el valor del PIN0 del PB es 0, el boton esta presion
+                            ado y redirige a la etiqueta BTN1
+001F   1C86           00045                 BTFSS   PB,1                    ;Se comprueba el PIN1 del PB, si es 1 salta una linea
+0020   2828           00046                 GOTO    BTN2                    ;Si el valor del PIN1 del PB es 0, el boton esta presion
+                            ado y redirige a la etiqueta BTN2
+MPASM  4.02 Released                               OBANDO.ASM   1-10-2023  23:17:05         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0021   1D06           00047                 BTFSS   PB,2                    ;Se comprueba el PIN2 del PB, si es 1 salta una linea
+0022   2890           00048                 GOTO    BTN3                    ;Si el valor del PIN2 del PB es 0, el boton esta presion
+                            ado y redirige a la etiqueta BTN3
+0023   1D86           00049                 BTFSS   PB,3                    ;Se comprueba el PIN3 del PB, si es 1 salta una linea
+0024   289B           00050                 GOTO    BTN4                    ;Si el valor del PIN3 del PB es 0, el boton esta presion
+                            ado y redirige a la etiqueta BTN4
+0025   281D           00051                 GOTO    START                   ;Redirige a la etiqueta START
+                      00052 
+0026   1405           00053 BTN1    BSF             PA,0                    ;Enciende la Bomba 1    | Etiqueta BTN1 da inicio a la r
+                            utina para el boton 1
+0027   2826           00054                 GOTO    BTN1                    ;Redirige a la etiqueta BTN1
+                      00055 
+0028   1485           00056 BTN2    BSF             PA,1                    ;Enciende la Bomba 2    | Etiqueta BTN2 da inicio a la r
+                            utina para el boton 2
+0029   2828           00057                 GOTO    BTN2                    ;Redirige a la etiqueta BTN2
+                      00058 
+0090                  00059 BTN3    ORG             90                              ;Se inicia la etiqueta BTN3 en la direccion 90 q
+                            ue da inicio a el boton 3
+0090   30A0           00060                 MOVLW   B'10100000'             ;Se carga el valor de B'10100000' a W
+0091   008B           00061                 MOVWF   INTCON                  ;Se mueve el valor de W a INTCON
+0092   3078           00062                 MOVLW   D'120'                  ;Se carga el valor de D'120' a W
+0093   0090           00063                 MOVWF   VAR                             ;Se mueve el valor de W a la variable VAR
+0094   1405           00064                 BSF             PA,0                    ;Se la Bomba 1
+0095   300C           00065                 MOVLW   D'12'                   ;Se carga el valor de D'12' a W
+0096   3001           00066                 MOVLW   TMR0                    ;Se mueve el valor de W a TMR0
+0097   0000           00067 BACK    NOP                                             ;Se inicia la etiqueta BACK para gastar ciclos d
+                            e reloj
+0098   0000           00068                 NOP                                             ;NO OPERATION
+0099   0000           00069                 NOP                                             ;NO OPERATION
+009A   2897           00070                 GOTO    BACK                    ;Redirije a la etiqueta BACK
+                      00071 
+009B   1405           00072 BTN4    BSF             PA,0                    ;Enciende la Bomba 1    | Etiqueta 4 da inicio a la ruti
+                            na para el boton 4
+009C   1485           00073                 BSF             PA,1                    ;Enciende la Bomba 2
+009D   289B           00074                 GOTO    BTN4                    ;Redirige a la etiqueta BTN4
+                      00075 
+                      00076 ;--------------------------------------------------------------         
+0004                  00077                 ORG             4                               ;Direccion del vector de interrupcion
+0004   2900           00078                 GOTO    INTER                   ;Redirige a la etiqueta INTER
+                      00079         
+0100                  00080 INTER   ORG             100                             ;Se inicia la rutina de la interrumpcion en la d
+                            ireccion 100 que da inicio a las rutinas de interrupcion
+0100   0B90           00081                 DECFSZ  VAR,1                   ;Decrementa el valor de la variable VAR, si es 0 salta u
+                            na linea
+0101   290C           00082                 GOTO    SALIR                   ;Redirige a la etiqueta SALIR
+0102   1C05           00083                 BTFSS   PA,0                    ;Explora un bit del PA0, si su valor es 1 salta una line
+                            a
+0103   2908           00084                 GOTO    GREEN                   ;Redirige a la etiqueta GREEN
+0104   2905           00085                 GOTO    YELLOW                  ;Redirige a la etiqueta YELLOW
+                      00086                 
+0105   1005           00087 YELLOW  BCF             PA,0                    ;Apaga la Bomba 1       | Etiqueta Yellow donde comienza
+                            n las instrucciones para que la bomba 2 este encendida 30s      
+0106   1485           00088                 BSF             PA,1                    ;Enciende la Bomba 2
+MPASM  4.02 Released                               OBANDO.ASM   1-10-2023  23:17:05         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0107   290A           00089                 GOTO    PUS                             ;Redirige a la Etiqueta PUS
+                      00090                 
+0108   1405           00091 GREEN   BSF             PA,0                    ;Enciende la Bomba 1
+0109   1085           00092                 BCF             PA,1                    ;Apaga la Bomba 2
+                      00093 
+010A   3078           00094 PUS             MOVLW   D'120'                  ;Se configura el valor de D'120' a W | Etiqueta PUS = Pa
+                            so Un Segundo donde hace el conteo de los segundos necesarios
+010B   0090           00095                 MOVWF   VAR                             ;Se mueve el valor de W a VAR
+010C   300C           00096 SALIR   MOVLW   D'12'                   ;Se configura el valor de D'12' a W | Etiqueta SALIR donde reali
+                            za acciones necesarias para salir de la interrupcion
+010D   0081           00097                 MOVWF   TMR0                    ;Mueve el valor de W a TMR0
+010E   110B           00098                 BCF             INTCON,2                ;Apago la bandera de INTCON en el bit 2
+010F   0009           00099                 RETFIE                                  ;Vuelve a donde ocurrio la interrupcion
+                      00100 
+                      00101                 END                                             ;Fin del programa
+MPASM  4.02 Released                               OBANDO.ASM   1-10-2023  23:17:05         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BACK                              00000097
+BTN1                              00000026
+BTN2                              00000028
+BTN3                              00000090
+BTN4                              0000009B
+GREEN                             00000108
+INICIO                            00000010
+INTCON                            0000000B
+INTER                             00000100
+OP                                00000001
+PA                                00000005
+PB                                00000006
+PUS                               0000010A
+SALIR                             0000010C
+START                             0000001D
+STATUS                            00000003
+TMR0                              00000001
+TRISA                             00000005
+TRISB                             00000006
+VAR                               00000010
+YELLOW                            00000105
+__16F84A                          00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---X----------- XXXXXXXXXXXXXXXX XXXXXXXXXX------ ----------------
+0080 : ---------------- XXXXXXXXXXXXXX-- ---------------- ----------------
+0100 : XXXXXXXXXXXXXXXX ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    58
+Program Memory Words Free:   966
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+
